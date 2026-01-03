@@ -7,31 +7,36 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "/api/auth/google/callback",
+      callbackURL: "http://localhost:5000/api/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
         const email = profile.emails[0].value;
 
-        let user = await User.findOne({ email });
+        let user = await User.findOne({
+          $or: [
+            { googleId: profile.id },
+            { email: email }
+          ]
+        });
 
         if (!user) {
           user = await User.create({
+            googleId: profile.id,
             name: profile.displayName,
-            email,
-            provider: "google",
-            hasVoted: false,
+            email: email,
           });
+        } else if (!user.googleId) {
+          user.googleId = profile.id;
+          await user.save();
         }
 
-        done(null, user);
-      } catch (error) {
-        done(error, null);
+        return done(null, user);
+      } catch (err) {
+        return done(err, null);
       }
     }
   )
 );
 
-// No sessions needed
-passport.serializeUser((user, done) => done(null, user));
-passport.deserializeUser((user, done) => done(null, user));
+module.exports = passport;

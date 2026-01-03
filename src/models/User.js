@@ -6,26 +6,43 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+
     email: {
       type: String,
       required: true,
       unique: true,
     },
+
     password: {
       type: String,
     },
+
     googleId: {
       type: String,
     },
+
     linkedinId: {
       type: String,
     },
+
     linkedinProfile: {
       type: String,
     },
+
     hasVoted: {
       type: Boolean,
       default: false,
+    },
+
+    /* =========================
+       FORGOT PASSWORD SUPPORT
+       ========================= */
+    resetPasswordToken: {
+      type: String,
+    },
+
+    resetPasswordExpires: {
+      type: Date,
     },
   },
   { timestamps: true }

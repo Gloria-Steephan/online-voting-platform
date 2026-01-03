@@ -1,13 +1,25 @@
 const express = require("express");
 const router = express.Router();
+
+const voteController = require("../controllers/vote.controller");
 const authMiddleware = require("../middleware/auth.middleware");
 
-const { castVote, getVoters } = require("../controllers/vote.controller");
+/**
+ * CAST VOTE
+ */
+router.post(
+  "/",
+  authMiddleware,
+  voteController.castVote
+);
 
-// Cast vote (protected)
-router.post("/", authMiddleware, castVote);
-
-// Get voters list (can be public or protected — choose one)
-router.get("/voters", getVoters);
+/**
+ * GET VOTERS
+ */
+router.get(
+  "/voters",
+  authMiddleware,
+  voteController.getVoters
+);
 
 module.exports = router;

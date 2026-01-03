@@ -5,35 +5,61 @@ const jwt = require("jsonwebtoken");
 
 const authController = require("../controllers/auth.controller");
 
-router.post("/signup", authController.signup);
+/* =========================
+   EMAIL / PASSWORD AUTH
+   ========================= */
+router.post("/signup", authController.register);
 router.post("/login", authController.login);
-// Google OAuth login
+
+/* =========================
+   FORGOT PASSWORD
+   ========================= */
+router.post("/forgot-password", authController.forgotPassword);
+router.post("/reset-password", authController.resetPassword);
+
+/* =========================
+   GOOGLE OAUTH START
+   ========================= */
 router.get(
   "/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+  })
 );
 
-// Google OAuth callback
+/* =========================
+   GOOGLE OAUTH CALLBACK
+   ========================= */
 router.get(
   "/google/callback",
-  passport.authenticate("google", { session: false }),
+  passport.authenticate("google", {
+    session: false,
+    failureRedirect: `${process.env.FRONTEND_URL}/login`,
+  }),
   (req, res) => {
-    const token = jwt.sign(
-      { id: req.user._id },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" }
-    );
+    try {
+      console.log("✅ Google OAuth callback hit");
+      console.log("User from Google:", req.user);
 
-    // For now, send token as JSON (frontend will handle later)
-    res.status(200).json({
-      message: "Google login successful",
-      token,
-      user: {
-        id: req.user._id,
-        name: req.user.name,
-        email: req.user.email,
-      },
-    });
+      if (!req.user) {
+        return res.redirect(`${process.env.FRONTEND_URL}/login`);
+      }
+
+      const token = jwt.sign(
+        { id: req.user._id },
+        process.env.JWT_SECRET,
+        { expiresIn: "1d" }
+      );
+
+      console.log("✅ JWT created, redirecting to frontend");
+
+      res.redirect(
+        `${process.env.FRONTEND_URL}/login/success?token=${token}`
+      );
+    } catch (err) {
+      console.error("❌ Google callback error:", err);
+      res.redirect(`${process.env.FRONTEND_URL}/login`);
+    }
   }
 );
 
