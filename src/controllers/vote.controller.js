@@ -12,7 +12,7 @@ exports.castVote = async (req, res) => {
     const userId = req.user._id;
     const { candidateId } = req.body;
 
-    // Prevent double voting
+    // 🔒 Prevent double voting
     if (req.user.hasVoted) {
       return res.status(400).json({ message: "You have already voted" });
     }
@@ -29,9 +29,9 @@ exports.castVote = async (req, res) => {
       candidate: candidateId,
     });
 
-    // Increment candidate vote count
+    // ✅ Increment correct vote field
     await Candidate.findByIdAndUpdate(candidateId, {
-      $inc: { voteCount: 1 },
+      $inc: { votes: 1 },
     });
 
     // Mark user as voted
@@ -55,7 +55,11 @@ exports.getVoters = async (req, res) => {
   try {
     const voters = await User.find(
       { hasVoted: true },
-      { name: 1, linkedinProfile: 1, _id: 0 }
+      {
+        name: 1,
+        linkedinProfile: 1,
+        _id: 0,
+      }
     );
 
     res.status(200).json(voters);

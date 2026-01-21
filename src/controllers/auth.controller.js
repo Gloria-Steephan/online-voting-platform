@@ -17,7 +17,7 @@ exports.register = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await User.create({
+    await User.create({
       name,
       email,
       password: hashedPassword,
@@ -71,6 +71,19 @@ exports.login = async (req, res) => {
 };
 
 /* =========================
+   GET CURRENT USER (NEW)
+   ========================= */
+exports.getMe = async (req, res) => {
+  res.json({
+    id: req.user._id,
+    name: req.user.name,
+    email: req.user.email,
+    hasVoted: req.user.hasVoted,
+    linkedinProfile: req.user.linkedinProfile,
+  });
+};
+
+/* =========================
    FORGOT PASSWORD (EMAIL)
    ========================= */
 exports.forgotPassword = async (req, res) => {
@@ -92,7 +105,6 @@ exports.forgotPassword = async (req, res) => {
     user.resetPasswordExpires = Date.now() + 15 * 60 * 1000;
     await user.save();
 
-    // ✅ Send email with reset link
     await sendResetPasswordEmail(user.email, resetToken);
 
     res.status(200).json({
@@ -130,7 +142,6 @@ exports.resetPassword = async (req, res) => {
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     user.password = hashedPassword;
 
-    // Invalidate token
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
 

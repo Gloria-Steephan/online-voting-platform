@@ -25,8 +25,10 @@ const userSchema = new mongoose.Schema(
       type: String,
     },
 
+    // 🔹 REQUIRED for voters list → LinkedIn profile click
     linkedinProfile: {
       type: String,
+      default: "", // safe default
     },
 
     hasVoted: {

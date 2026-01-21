@@ -64,9 +64,9 @@ export default function CandidateCard({
               Vote
             </button>
 
-            {candidate.linkedinProfile && (
+            {candidate.linkedinUrl && (
               <a
-                href={candidate.linkedinProfile}
+                href={candidate.linkedinUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center w-12 h-12 border-2 rounded-full hover:bg-[#0A66C2] hover:text-white transition-colors"

@@ -70,9 +70,8 @@ export default function Login({ onLogin }: LoginProps) {
   };
 
   const handleLinkedInLogin = () => {
-    
-    
-  };
+  window.location.href = "http://localhost:5000/api/auth/linkedin";
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">

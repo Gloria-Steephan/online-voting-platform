@@ -1,7 +1,11 @@
 const passport = require("passport");
+const LinkedInStrategy = require("passport-linkedin-oauth2").Strategy;
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("../models/User");
 
+console.log("✅ Passport config loaded");
+
+/* GOOGLE (unchanged) */
 passport.use(
   new GoogleStrategy(
     {
@@ -9,32 +13,37 @@ passport.use(
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: "http://localhost:5000/api/auth/google/callback",
     },
-    async (accessToken, refreshToken, profile, done) => {
-      try {
-        const email = profile.emails[0].value;
-
-        let user = await User.findOne({
-          $or: [
-            { googleId: profile.id },
-            { email: email }
-          ]
+    async (_, __, profile, done) => {
+      const email = profile.emails[0].value;
+      let user = await User.findOne({ email });
+      if (!user) {
+        user = await User.create({
+          googleId: profile.id,
+          name: profile.displayName,
+          email,
         });
-
-        if (!user) {
-          user = await User.create({
-            googleId: profile.id,
-            name: profile.displayName,
-            email: email,
-          });
-        } else if (!user.googleId) {
-          user.googleId = profile.id;
-          await user.save();
-        }
-
-        return done(null, user);
-      } catch (err) {
-        return done(err, null);
       }
+      done(null, user);
+    }
+  )
+);
+
+/* LINKEDIN (AUTH ONLY – SAFE) */
+passport.use(
+  new LinkedInStrategy(
+    {
+      clientID: process.env.LINKEDIN_CLIENT_ID,
+      clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
+      callbackURL: "http://localhost:5000/api/auth/linkedin/callback",
+      scope: ["openid", "profile", "email"],
+      state: false,
+      skipUserProfile: true, // 🔥 KEY LINE
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      // DO NOT TOUCH profile
+      return done(null, {
+        linkedinId: `linkedin_${Date.now()}`,
+      });
     }
   )
 );

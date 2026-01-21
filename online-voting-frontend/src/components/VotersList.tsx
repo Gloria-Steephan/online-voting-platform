@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Linkedin } from "lucide-react";
 import api from "../services/api";
 
 interface Voter {
@@ -42,18 +43,22 @@ export default function VotersList() {
       ) : (
         <ul className="divide-y">
           {voters.map((voter, index) => (
-            <li key={index} className="py-3">
-              {voter.linkedinProfile ? (
+            <li
+              key={index}
+              className="py-3 flex items-center justify-between"
+            >
+              <span className="font-medium">{voter.name}</span>
+
+              {voter.linkedinProfile && (
                 <a
                   href={voter.linkedinProfile}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-medium text-blue-600 hover:underline"
+                  title="Open LinkedIn profile"
+                  className="text-[#0A66C2] hover:scale-110 transition-transform"
                 >
-                  {voter.name}
+                  <Linkedin className="w-5 h-5" />
                 </a>
-              ) : (
-                <p className="font-medium">{voter.name}</p>
               )}
             </li>
           ))}

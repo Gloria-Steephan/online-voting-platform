@@ -20,6 +20,24 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
   const hasVoted = currentUser.hasVoted === true;
 
   /* =========================
+     SYNC USER FROM BACKEND
+     (FIXES REFRESH BUG)
+     ========================= */
+  useEffect(() => {
+    const fetchMe = async () => {
+      try {
+        const res = await api.get("/auth/me");
+        setCurrentUser(res.data);
+        localStorage.setItem("user", JSON.stringify(res.data));
+      } catch (err) {
+        console.error("Failed to sync user");
+      }
+    };
+
+    fetchMe();
+  }, []);
+
+  /* =========================
      FETCH CANDIDATES
      ========================= */
   const fetchCandidates = async () => {

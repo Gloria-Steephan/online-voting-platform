@@ -6,16 +6,13 @@ const candidateSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    profileImage: {
-      type: String,
-    },
-    linkedinProfile: {
-      type: String,
-      required: true,
-    },
-    voteCount: {
+    votes: {
       type: Number,
       default: 0,
+    },
+    linkedinUrl: {
+      type: String,
+      required: true,
     },
   },
   { timestamps: true }
