@@ -21,7 +21,6 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
   /* =========================
      SYNC USER FROM BACKEND
-     (FIXES REFRESH BUG)
      ========================= */
   useEffect(() => {
     const fetchMe = async () => {
@@ -66,13 +65,10 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
 
       const updatedUser = { ...currentUser, hasVoted: true };
 
-      // Sync everywhere
       setCurrentUser(updatedUser);
       localStorage.setItem("user", JSON.stringify(updatedUser));
 
-      // Refresh candidates to reflect vote count
       fetchCandidates();
-
       setShowThankYou(true);
     } catch (err: any) {
       alert(err.response?.data?.message || "Voting failed");
@@ -107,12 +103,13 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
           </button>
 
           <button
-            onClick={() => setShowVoters(true)}
+            onClick={() => hasVoted && setShowVoters(true)}
+            disabled={!hasVoted}
             className={`px-6 py-2 rounded-full font-medium ${
               showVoters
                 ? "bg-blue-600 text-white"
                 : "bg-gray-200 text-gray-700"
-            }`}
+            } ${!hasVoted ? "opacity-50 cursor-not-allowed" : ""}`}
           >
             View Voters
           </button>
@@ -144,8 +141,8 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
           </>
         )}
 
-        {/* VOTERS LIST */}
-        {showVoters && <VotersList />}
+        {/* ✅ VOTERS LIST (ONLY AFTER VOTING) */}
+        {hasVoted && showVoters && <VotersList />}
       </main>
 
       {/* THANK YOU MODAL */}

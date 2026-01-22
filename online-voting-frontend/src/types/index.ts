@@ -2,7 +2,7 @@ export interface Candidate {
   _id: string;
   name: string;
   voteCount: number;
-  linkedinUrl?: string;
+  linkedinProfile?: string;
   image?: string;
 }
 

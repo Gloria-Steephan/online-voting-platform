@@ -4,7 +4,6 @@ import { Mail, Lock, Eye, EyeOff, Linkedin } from 'lucide-react';
 import { User } from '../types';
 import api from '../services/api';
 
-
 interface LoginProps {
   onLogin: (user: User) => void;
 }
@@ -18,60 +17,54 @@ export default function Login({ onLogin }: LoginProps) {
 
   const validateForm = () => {
     const newErrors: { email?: string; password?: string } = {};
-    
+
     if (!email) {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(email)) {
       newErrors.email = 'Email is invalid';
     }
-    
+
     if (!password) {
       newErrors.password = 'Password is required';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
- const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  if (!validateForm()) return;
+    if (!validateForm()) return;
 
-  try {
-    const res = await api.post('/auth/login', {
-      email,
-      password,
-    });
+    try {
+      const res = await api.post('/auth/login', {
+        email,
+        password,
+      });
 
-    const { token, user } = res.data;
+      const { token, user } = res.data;
 
-    // Save auth data
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
 
-    // Update app state
-    onLogin(user);
+      onLogin(user);
+      navigate('/dashboard');
+    } catch (err: any) {
+      const message =
+        err.response?.data?.message || 'Login failed. Please try again';
 
-    navigate('/dashboard');
-  } catch (err: any) {
-    const message =
-      err.response?.data?.message || 'Login failed. Please try again';
-
-    setErrors({ password: message });
-  }
-};
-
+      setErrors({ password: message });
+    }
+  };
 
   const handleGoogleLogin = () => {
-    // Redirect to backend Google OAuth
-
     window.location.href = 'http://localhost:5000/api/auth/google';
   };
 
   const handleLinkedInLogin = () => {
-  window.location.href = "http://localhost:5000/api/auth/linkedin";
-};
+    window.location.href = 'http://localhost:5000/api/auth/linkedin';
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
@@ -85,8 +78,12 @@ export default function Login({ onLogin }: LoginProps) {
           </div>
 
           {/* Heading */}
-          <h1 className="text-3xl font-bold text-center text-gray-900 mb-2">Welcome Back</h1>
-          <p className="text-center text-gray-600 mb-8">Sign in to cast your vote</p>
+          <h1 className="text-3xl font-bold text-center text-gray-900 mb-2">
+            Welcome Back
+          </h1>
+          <p className="text-center text-gray-600 mb-8">
+            Sign in to cast your vote
+          </p>
 
           {/* Social Login Buttons */}
           <div className="space-y-3 mb-6">
@@ -131,7 +128,9 @@ export default function Login({ onLogin }: LoginProps) {
               <div className="w-full border-t border-gray-300"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Or continue with email</span>
+              <span className="px-2 bg-white text-gray-500">
+                Or continue with email
+              </span>
             </div>
           </div>
 
@@ -145,12 +144,16 @@ export default function Login({ onLogin }: LoginProps) {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email address"
-                  className={`w-full pl-12 pr-4 py-3 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  className={`w-full pl-12 pr-4 py-3 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                     errors.email ? 'border-red-500' : 'border-gray-300'
                   }`}
                 />
               </div>
-              {errors.email && <p className="mt-1 text-sm text-red-500 px-4">{errors.email}</p>}
+              {errors.email && (
+                <p className="mt-1 text-sm text-red-500 px-4">
+                  {errors.email}
+                </p>
+              )}
             </div>
 
             <div>
@@ -161,7 +164,7 @@ export default function Login({ onLogin }: LoginProps) {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Password"
-                  className={`w-full pl-12 pr-12 py-3 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  className={`w-full pl-12 pr-12 py-3 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                     errors.password ? 'border-red-500' : 'border-gray-300'
                   }`}
                 />
@@ -170,10 +173,18 @@ export default function Login({ onLogin }: LoginProps) {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
                 </button>
               </div>
-              {errors.password && <p className="mt-1 text-sm text-red-500 px-4">{errors.password}</p>}
+              {errors.password && (
+                <p className="mt-1 text-sm text-red-500 px-4">
+                  {errors.password}
+                </p>
+              )}
             </div>
 
             <div className="flex justify-end">
@@ -192,9 +203,16 @@ export default function Login({ onLogin }: LoginProps) {
               Sign In
             </button>
           </form>
+
+          {/* ✅ Signup link */}
+          <p className="text-sm text-center text-gray-600 mt-6">
+            Don’t have an account?{' '}
+            <Link to="/signup" className="text-blue-600 hover:underline font-medium">
+              Sign up
+            </Link>
+          </p>
         </div>
       </div>
     </div>
   );
 }
-

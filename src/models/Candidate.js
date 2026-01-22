@@ -6,7 +6,7 @@ const candidateSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    votes: {
+    voteCount: {
       type: Number,
       default: 0,
     },

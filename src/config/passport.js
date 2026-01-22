@@ -3,9 +3,9 @@ const LinkedInStrategy = require("passport-linkedin-oauth2").Strategy;
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("../models/User");
 
-console.log("✅ Passport config loaded");
 
-/* GOOGLE (unchanged) */
+
+/* GOOGLE  */
 passport.use(
   new GoogleStrategy(
     {
@@ -37,10 +37,10 @@ passport.use(
       callbackURL: "http://localhost:5000/api/auth/linkedin/callback",
       scope: ["openid", "profile", "email"],
       state: false,
-      skipUserProfile: true, // 🔥 KEY LINE
+      skipUserProfile: true, 
     },
     async (accessToken, refreshToken, profile, done) => {
-      // DO NOT TOUCH profile
+      
       return done(null, {
         linkedinId: `linkedin_${Date.now()}`,
       });

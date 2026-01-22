@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import Signup from "./pages/Signup";
 
 import Login from "./components/Login";
 import ForgotPassword from "./components/ForgotPassword";
@@ -13,7 +14,7 @@ function App() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔄 Restore user from localStorage on app load
+  
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -32,7 +33,6 @@ function App() {
     localStorage.removeItem("user");
   };
 
-  // ⏳ Prevent route guards from running before auth state is ready
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center text-gray-600">
@@ -52,6 +52,18 @@ function App() {
               <Navigate to="/dashboard" replace />
             ) : (
               <Login onLogin={handleLogin} />
+            )
+          }
+        />
+
+        {/* ================= SIGNUP ================= */}
+        <Route
+          path="/signup"
+          element={
+            user ? (
+              <Navigate to="/dashboard" replace />
+            ) : (
+              <Signup />
             )
           }
         />

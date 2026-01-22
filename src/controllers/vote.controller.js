@@ -12,29 +12,24 @@ exports.castVote = async (req, res) => {
     const userId = req.user._id;
     const { candidateId } = req.body;
 
-    // 🔒 Prevent double voting
-    if (req.user.hasVoted) {
+    if (req.user.hasVoted === true) {
       return res.status(400).json({ message: "You have already voted" });
     }
 
-    // Validate candidate
     const candidate = await Candidate.findById(candidateId);
     if (!candidate) {
       return res.status(404).json({ message: "Candidate not found" });
     }
 
-    // Save vote record
     await Vote.create({
       user: userId,
       candidate: candidateId,
     });
 
-    // ✅ Increment correct vote field
     await Candidate.findByIdAndUpdate(candidateId, {
-      $inc: { votes: 1 },
+      $inc: { voteCount: 1 },
     });
 
-    // Mark user as voted
     await User.findByIdAndUpdate(userId, {
       hasVoted: true,
     });

@@ -11,11 +11,11 @@ const seedCandidates = async () => {
     await Candidate.insertMany([
       {
         name: "Candidate One",
-        linkedinProfile: "https://linkedin.com/in/candidateone",
+        linkedinProfile: "https://www.linkedin.com/in/gloria-steephan-43a574371",
       },
       {
         name: "Candidate Two",
-        linkedinProfile: "https://linkedin.com/in/candidatetwo",
+        linkedinProfile: "https://www.linkedin.com/in/chrismon-p-lijo-083b07322?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
       },
     ]);
 
