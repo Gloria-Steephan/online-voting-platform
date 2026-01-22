@@ -14,7 +14,7 @@ export default function Login({ onLogin }: LoginProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const navigate = useNavigate();
-
+  const API_BASE = import.meta.env.VITE_API_URL.replace('/api', '');
   const validateForm = () => {
     const newErrors: { email?: string; password?: string } = {};
 
@@ -59,11 +59,11 @@ export default function Login({ onLogin }: LoginProps) {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:5000/api/auth/google';
+    window.location.href = `${API_BASE}/api/auth/google`;
   };
 
   const handleLinkedInLogin = () => {
-    window.location.href = 'http://localhost:5000/api/auth/linkedin';
+    window.location.href = `${API_BASE}/api/auth/linkedin`;
   };
 
   return (

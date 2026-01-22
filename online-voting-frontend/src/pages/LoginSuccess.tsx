@@ -20,7 +20,7 @@ export default function LoginSuccess() {
 
     // Fetch authenticated user profile
     api
-      .get("/protected/profile")
+      .get("/auth/profile")
       .then((res) => {
         // ✅ Store ONLY the user object (important fix)
         localStorage.setItem("user", JSON.stringify(res.data.user));
