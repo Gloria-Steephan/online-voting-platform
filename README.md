@@ -26,31 +26,6 @@ Authentication
 -> Google OAuth 2.0
 -> LinkedIn OAuth
 
-📁 Project Structure
-
-online-voting-platform/
-│
-├── online-voting-frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── services/
-│   │   ├── types/
-│   │   ├── App.tsx
-│   │   └── main.tsx
-│   ├── .env
-│   └── package.json
-│
-├── online-voting-backend/
-│   ├── src/
-│   │   ├── controllers/
-│   │   ├── routes/
-│   │   ├── models/
-│   │   ├── middleware/
-│   │   └── config/
-│   ├── .env
-│   └── package.json
-
 🔧 Backend Setup (LOCAL)
 
 1️⃣ Install dependencies
