@@ -25,7 +25,7 @@ export default function Dashboard({ user, onLogout }: DashboardProps) {
   useEffect(() => {
     const fetchMe = async () => {
       try {
-        const res = await api.get("/auth/me");
+        const res = await api.get("/protected/profile");
         setCurrentUser(res.data);
         localStorage.setItem("user", JSON.stringify(res.data));
       } catch (err) {

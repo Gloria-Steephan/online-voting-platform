@@ -16,12 +16,20 @@ function App() {
 
   
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    setLoading(false);
-  }, []);
+  const token = localStorage.getItem("token");
+  const storedUser = localStorage.getItem("user");
+
+  if (token && storedUser) {
+    setUser(JSON.parse(storedUser));
+  } else {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    setUser(null);
+  }
+
+  setLoading(false);
+}, []);
+
 
   const handleLogin = (userData: User) => {
     setUser(userData);

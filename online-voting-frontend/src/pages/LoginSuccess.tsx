@@ -9,35 +9,36 @@ export default function LoginSuccess() {
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");
 
-    // If token is missing, redirect to login
+    // ❌ No token → back to login
     if (!token) {
-      navigate("/login");
+      navigate("/login", { replace: true });
       return;
     }
 
-    // Save token
+    // ✅ Save token
     localStorage.setItem("token", token);
 
-    // Fetch authenticated user profile
+    // ✅ Fetch authenticated user (CORRECT endpoint)
     api
-      .get("/auth/profile")
+      .get("/protected/profile")
       .then((res) => {
-        // ✅ Store ONLY the user object (important fix)
-        localStorage.setItem("user", JSON.stringify(res.data.user));
+        // Store user object only
+        localStorage.setItem("user", JSON.stringify(res.data));
 
-        // Redirect safely to dashboard
+        // Redirect to dashboard
         navigate("/dashboard", { replace: true });
       })
       .catch(() => {
-        // Token invalid or error → force login
-        localStorage.clear();
-        navigate("/login");
+        // Token invalid / expired
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        navigate("/login", { replace: true });
       });
   }, [navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center text-gray-600">
-      Signing you in with Google…
+      Signing you in…
     </div>
   );
 }
